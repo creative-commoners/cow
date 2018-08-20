@@ -81,6 +81,9 @@ class Application extends Console\Application
         // Schema commands
         $commands[] = new Commands\Schema\Validate();
 
+        // Security commands
+        $commands[] = new Commands\Security\SyncIssues();
+
         return $commands;
     }
 }
