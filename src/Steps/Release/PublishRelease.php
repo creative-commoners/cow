@@ -79,8 +79,7 @@ class PublishRelease extends ReleaseStep
 
         if (!is_null($branch)) { // skip if it's already detached
             // Step 1: Push development branch to origin before tagging
-            // sboyd
-            // $library->pushTo('origin');
+            $library->pushTo('origin');
 
             // Step 2: Detach head from current branch before modifying
             $this->detachBranch($output, $library);
@@ -89,11 +88,9 @@ class PublishRelease extends ReleaseStep
         // Step 3: Rewrite composer.json on this head to all tagged versions only
         $this->stabiliseRequirements($output, $releasePlanNode);
 
-        // sboyd
         // Step 4: Tag and push this tag
-        // $this->publishTag($output, $releasePlanNode);
+        $this->publishTag($output, $releasePlanNode);
 
-<<<<<<< HEAD
         // Step 5: Create release in github
         $this->createGitHubRelease($output, $releasePlanNode);
 
@@ -101,12 +98,6 @@ class PublishRelease extends ReleaseStep
             // Step 6: Restore back to dev branch
             $library->checkout($output, $branch);
         }
-=======
-        // if (!is_null($branch)) {
-        //     // Step 5: Restore back to dev branch
-        //     $library->checkout($output, $branch);
-        // }
->>>>>>> Hardcode graphql version for 4.8.0 release
     }
 
     /**
@@ -157,7 +148,6 @@ class PublishRelease extends ReleaseStep
             );
         }
 
-        // sboyd
         // HACK - hardcode graphql version recipe-cms to use `3.5.0@stable || 4.0.0-alpha1` for graphql
         // - Remove this in 4.9.0
         if (isset($composerData['require']['silverstripe/graphql'])) {
@@ -216,8 +206,7 @@ class PublishRelease extends ReleaseStep
         $repo->run("add", [$path]);
         $status = $repo->run("status");
         if (stripos($status, 'Changes to be committed:')) {
-            // sboyd
-            // $repo->run("commit", ["-m", "MNT Update development dependencies"]);
+            $repo->run("commit", ["-m", "MNT Update development dependencies"]);
         }
     }
 
@@ -227,9 +216,6 @@ class PublishRelease extends ReleaseStep
      */
     protected function publishTag(OutputInterface $output, LibraryRelease $releasePlan)
     {
-        // sboyd
-        return;
-
         $library = $releasePlan->getLibrary();
         $libraryName = $library->getName();
         $tag = $releasePlan->getVersion()->getValue();
@@ -253,8 +239,6 @@ class PublishRelease extends ReleaseStep
      */
     protected function createGitHubRelease(OutputInterface $output, LibraryRelease $release)
     {
-        // sboyd
-        return;
 
         $library = $release->getLibrary();
         $libraryName = $library->getName();
