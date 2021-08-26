@@ -152,10 +152,11 @@ class PublishRelease extends ReleaseStep
         // - Remove this in 4.9.0
         if (isset($composerData['require']['silverstripe/graphql'])) {
             // asset-admin, versioned, versioned-admin
-            $constraint = '^3 || ^4';
-            if (preg_match('#/recipe-cms$#', $parentLibrary->getDirectory())) {
+            $constraint = $composerData['require']['silverstripe/graphql'];
+
+            if (preg_match('#silverstripe\/recipe-cms$#', $parentLibrary->getName())) {
                 // recipe-cms - don't use graphql4
-                $constraint = '3.5.0@stable';
+                $constraint = $constraint . ' || ~4.0.0-alpha';
             }
             $composerData['require']['silverstripe/graphql'] = $constraint;
         }
