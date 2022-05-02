@@ -128,11 +128,9 @@ class ComposerConstraint
             return;
         }
 
-        // HACK for graphql which currently uses 3.x-dev || 4.x-dev
-        // - probably change this hack for the 4.8.1 release
-        // - probably remove this hack for the 4.9.0 release
+        // HACK for graphql which where there's dual support for 3.x-dev || 4.x-dev
         if ($name == 'silverstripe/graphql') {
-            $constraint = '3.x-dev';
+            $constraint = '4.x-dev';
         }
 
         // Parse type

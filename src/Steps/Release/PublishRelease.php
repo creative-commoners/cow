@@ -148,15 +148,15 @@ class PublishRelease extends ReleaseStep
             );
         }
 
-        // HACK - hardcode graphql version recipe-cms to use `3.5.0@stable || 4.0.0-alpha1` for graphql
-        // - Remove this in 4.9.0
+        // HACK - hardcode graphql version recipe-cms to use `~4.0.0` for graphql
+        // - Remove this in 4.12.0
         if (isset($composerData['require']['silverstripe/graphql'])) {
             // asset-admin, versioned, versioned-admin
             $constraint = $composerData['require']['silverstripe/graphql'];
 
             if (preg_match('#silverstripe\/recipe-cms$#', $parentLibrary->getName())) {
-                // recipe-cms - don't use graphql4
-                $constraint = $constraint . ' || ~4.0.0-alpha';
+                // recipe-cms - use graphql4
+                $constraint = '~4.0.0';
             }
             $composerData['require']['silverstripe/graphql'] = $constraint;
         }
