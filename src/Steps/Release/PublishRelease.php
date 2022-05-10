@@ -156,7 +156,7 @@ class PublishRelease extends ReleaseStep
 
             if (preg_match('#silverstripe\/recipe-cms$#', $parentLibrary->getName())) {
                 // recipe-cms - use graphql4
-                $constraint = '~4.0.0';
+                $constraint = '~3.8.0 || ~4.0.0';
             }
             $composerData['require']['silverstripe/graphql'] = $constraint;
         }
