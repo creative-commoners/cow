@@ -144,6 +144,16 @@ class PublishRelease extends ReleaseStep
             );
         }
 
+        // HACK - hardcode graphql version recipe-cms to use `~4.1.0` for graphql
+        if (isset($composerData['require']['silverstripe/graphql'])) {
+            if (preg_match('#silverstripe\/recipe-cms$#', $parentLibrary->getName())) {
+                $stability = $releasePlanNode->getVersion()->getStability() ?: 'stable';
+                // recipe-cms - allow dual support for graphql
+                $constraint = '~3.8.0@stable || ~4.1.0@' . $stability;
+                $composerData['require']['silverstripe/graphql'] = $constraint;
+            }
+        }
+
         // Save modifications to the composer.json for this module
         if ($composerData !== $originalData) {
             $parentName = $parentLibrary->getName();

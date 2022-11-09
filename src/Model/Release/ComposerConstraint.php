@@ -128,6 +128,11 @@ class ComposerConstraint
             return;
         }
 
+        // HACK for graphql which where there's dual support for 3.x-dev || 4.x-dev
+        if ($name == 'silverstripe/graphql') {
+            $constraint = '4.x-dev';
+        }
+
         // Parse type
         $parsed = static::parse($constraint);
         if (!$parsed) {
