@@ -10,6 +10,7 @@ use SilverStripe\Cow\Model\Changelog\Changelog;
 use SilverStripe\Cow\Model\Changelog\ChangelogLibrary;
 use SilverStripe\Cow\Model\Modules\Library;
 use SilverStripe\Cow\Model\Modules\Project;
+use SilverStripe\Cow\Model\Release\CommitHashVersion;
 use SilverStripe\Cow\Model\Release\ComposerConstraint;
 use SilverStripe\Cow\Model\Release\LibraryRelease;
 use SilverStripe\Cow\Model\Release\Version;
@@ -248,22 +249,35 @@ class CreateChangelog extends ReleaseStep
             // Use an explicitly specified previous version
             $childHistoricVersion = $childNewRelease->getPriorVersion(false);
             if (!$childHistoricVersion) {
-                $historicConstraintName = $pastComposer['require'][$childReleaseName];
-
-                if ($childNewRelease->getPriorVersion()) {
-                    $childHistoricVersion = $childNewRelease->getPriorVersion();
+                // Temporary hardcoded commit hashes for the commit from which to get changelog history.
+                // This is only for NEW packages.
+                if ($childReleaseName === 'silverstripe/template-engine') {
+                    // Last commit from framework before migrating
+                    $childHistoricVersion = new CommitHashVersion('0f6f2dca31879464eea84cd6b14fe357fc7381ac');
+                } elseif ($childReleaseName === 'silverstripe/htmleditor-tinymce') {
+                    // blank "init" commit
+                    $childHistoricVersion = new CommitHashVersion('8acb17ce72471e18c1ec9ed6c0b7077ec652dfce');
+                } elseif ($childReleaseName === 'silverstripe/startup-theme') {
+                    // commit named "initial commit"
+                    $childHistoricVersion = new CommitHashVersion('69105e3ac70063c9bedf5fbfacd81c18964f57a8');
                 } else {
-                    // Get oldest existing tag that matches the given constraint as the "from" for changelog purposes.
-                    $historicConstraint = new ComposerConstraint(
-                        $historicConstraintName,
-                        $historicVersion,
-                        $childReleaseName
-                    );
+                    $historicConstraintName = $pastComposer['require'][$childReleaseName];
 
-                    $childHistoricVersion = $childNewReleaseLibrary->getOldestVersionMatching(
-                        $historicConstraint,
-                        $childNewRelease->getVersion()->isStable()
-                    );
+                    if ($childNewRelease->getPriorVersion()) {
+                        $childHistoricVersion = $childNewRelease->getPriorVersion();
+                    } else {
+                        // Get oldest existing tag that matches the given constraint as the "from" for changelog purposes.
+                        $historicConstraint = new ComposerConstraint(
+                            $historicConstraintName,
+                            $historicVersion,
+                            $childReleaseName
+                        );
+
+                        $childHistoricVersion = $childNewReleaseLibrary->getOldestVersionMatching(
+                            $historicConstraint,
+                            $childNewRelease->getVersion()->isStable()
+                        );
+                    }
                 }
             }
 

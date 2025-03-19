@@ -86,7 +86,7 @@ class Changelog
             // Read commits from -rc1 of the prior release to the prior stable
             // This is done so that any commits that happend post-rc LAST release are still audited
             // in the CURRENT release audit
-            if ($changelogAuditMode) {
+            if ($changelogAuditMode) { // @TODO will need some attention
                 $dir = $changelogLibrary->getRelease()->getLibrary()->getDirectory();
                 $fromVersionRc1 = preg_replace('#-(alpha|beta|rc)[0-9]+$#', '', $fromVersion) . '-rc1';
                 $cmd = "cd $dir && git tag | grep $fromVersionRc1 && cd -";
@@ -176,7 +176,7 @@ class Changelog
                 'name' => $name,
                 'link' => 'https://packagist.org/packages/' . $name,
                 'version' => [
-                    'prior' => $library->getRelease()->getPriorVersion()->getValue(),
+                    'prior' => $library->getRelease()->getPriorVersion()?->getValue() ?? '',
                     'release' => $library->getRelease()->getVersion()->getValue()
                 ],
                 'commits' => [

@@ -23,9 +23,9 @@ class Version
      */
     protected $original;
 
-    protected int $major;
+    protected ?int $major;
 
-    protected int $minor;
+    protected ?int $minor;
 
     protected ?int $patch;
 
