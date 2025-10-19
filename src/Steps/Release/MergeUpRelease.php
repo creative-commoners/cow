@@ -103,6 +103,11 @@ class MergeUpRelease extends ReleaseStep
         $library = $releasePlanNode->getLibrary();
         $name = $library->getName();
 
+        if (!$library->isRecipe()) {
+            $this->log($output, "Skipping merge up for non-recipe <info>{$name}</info>");
+            return;
+        }
+
         // Step 1. Checkout branch to merge into
         $library->checkout($output, $mergeInto);
 
