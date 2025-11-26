@@ -5,7 +5,7 @@ namespace SilverStripe\Cow\Model\Changelog;
 use DateTime;
 use Gitonomy\Git\Commit;
 use SilverStripe\Cow\Utility\Format;
-use Parsedown;
+use League\CommonMark\CommonMarkConverter;
 
 /**
  * Represents a line-item in a changelog
@@ -224,10 +224,10 @@ class ChangelogItem
             }
         }
         // Escape the whole string if it contains markdown so that it won't fail CI linting
-        $parsedown = new Parsedown();
-        $parsed = $parsedown->text($message);
+        $converter = new CommonMarkConverter();
+        $parsed = $converter->convert($message)->getContent();
         // remove <p> tags that were just added
-        $parsed = preg_replace(['#^<p>#', '#</p>$#'], '', $parsed);
+        $parsed = preg_replace(['#^<p>#', '#</p>\n?$#'], '', $parsed);
         // compare with original message, if it's changed it means there was markdown in there
         if ($message !== $parsed) {
             $message = str_replace('`', '', $message);
