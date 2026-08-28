@@ -68,6 +68,12 @@ class ChangelogItemTest extends TestCase
             ['BUG FIX Fixed some regex rules', 'Fixed some regex rules', 'Bugfixes'],
             ['FIX Fixed some regex rules', 'Fixed some regex rules', 'Bugfixes'],
             ['FIX: Forgot colon', 'Forgot colon', 'Bugfixes'],
+            // A hyphen separator must be stripped too, otherwise the leftover "- " reads as a
+            // markdown list item and the whole message gets escaped in backticks
+            ['FIX - code example in doc block', 'code example in doc block', 'Bugfixes'],
+            ['FIX- No space before hyphen', 'No space before hyphen', 'Bugfixes'],
+            ['DOC - Add some documentation', 'Add some documentation', 'Documentation'],
+            ['ENH - Support goland PHP extension', 'Support goland PHP extension', 'Features and Enhancements'],
             ['Fixed some regex rules', 'Fixed some regex rules', 'Other changes'],
             ['Fixing some regex rules', 'Fixing some regex rules', 'Other changes'],
             ['Fixing Behat', 'Fixing Behat', 'Other changes'],

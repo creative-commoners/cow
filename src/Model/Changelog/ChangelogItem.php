@@ -54,28 +54,28 @@ class ChangelogItem
             '/^(\[?CVE-(\d){4}-(\d){4,}\]?):?/i',
         ],
         'API Changes' => [
-            '/^API\b:?/'
+            '/^API\b\s*[:\-]?/'
         ],
         'Features and Enhancements' => [
-            '/^(ENH(ANCEMENT)?|NEW)\b:?/'
+            '/^(ENH(ANCEMENT)?|NEW)\b\s*[:\-]?/'
         ],
         'Bugfixes' => [
-            '/^(FIX|BUG)\b:?/',
+            '/^(FIX|BUG)\b\s*[:\-]?/',
         ],
         'Documentation' => [
-            '/^(DOCS?)\b:?/',
+            '/^(DOCS?)\b\s*[:\-]?/',
         ],
         'Merge' => [
             '/^Merge/',
         ],
         'Dependencies' => [
-            '/^(DEP)\b:?/',
+            '/^(DEP)\b\s*[:\-]?/',
         ],
         'Translations' => [
-            '/^(TLN)\b:?/',
+            '/^(TLN)\b\s*[:\-]?/',
         ],
         'Maintenance' => [
-            '/^(MNT)\b:?/',
+            '/^(MNT)\b\s*[:\-]?/',
             '/\btravis\b/'
         ],
     ];
