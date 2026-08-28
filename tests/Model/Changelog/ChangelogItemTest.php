@@ -132,6 +132,82 @@ class ChangelogItemTest extends TestCase
     }
 
     /**
+     * A PR squash merged via the GitHub UI can keep the merge commit boilerplate as its subject, leaving
+     * the real message in the body. That body is only used when the commit has a single parent - a genuine
+     * merge commit's body duplicates a commit that is already in the log.
+     *
+     * @param string $subject
+     * @param string $body
+     * @param string[] $parentHashes
+     * @param string $expectedRawMessage
+     * @param string $expectedType
+     * @dataProvider mergeSubjectProvider
+     */
+    public function testGetRawMessageFallsBackToBodyForSquashedMerges(
+        $subject,
+        $body,
+        array $parentHashes,
+        $expectedRawMessage,
+        $expectedType
+    ) {
+        $commit = $this->createMock(Commit::class);
+        $commit->method('getSubjectMessage')->willReturn($subject);
+        $commit->method('getBodyMessage')->willReturn($body);
+        $commit->method('getParentHashes')->willReturn($parentHashes);
+
+        $item = new ChangelogItem($this->library, $commit);
+        $this->assertSame($expectedRawMessage, $item->getRawMessage());
+        $this->assertSame($expectedType, $item->getType());
+    }
+
+    /**
+     * @return array[] Subject, body, parent hashes, expected raw message, expected type
+     */
+    public function mergeSubjectProvider()
+    {
+        $squashed = ['abc123'];
+        $merged = ['abc123', 'def456'];
+
+        return [
+            'squashed merge uses the body' => [
+                'Merge pull request #26 from creative-commoners/pulls/1.0/cve-rce',
+                'FIX Prevent RCE via translation default strings',
+                $squashed,
+                'FIX Prevent RCE via translation default strings',
+                'Bugfixes',
+            ],
+            'squashed merge uses only the first line of the body' => [
+                'Merge pull request #11 from creative-commoners/pulls/1/generators',
+                "ENH Use Generators for ORM Query\n\nAlso updates Map and ArrayList.",
+                $squashed,
+                'ENH Use Generators for ORM Query',
+                'Features and Enhancements',
+            ],
+            'squashed merge with an empty body keeps the subject' => [
+                'Merge pull request #12 from creative-commoners/pulls/1/no-body',
+                '',
+                $squashed,
+                'Merge pull request #12 from creative-commoners/pulls/1/no-body',
+                'Merge',
+            ],
+            'genuine merge commit keeps the subject, to avoid duplicating its parent' => [
+                'Merge pull request #11971 from creative-commoners/pulls/5.4/listbox-mixed-values',
+                'FIX ListboxField discarding mixed-type values',
+                $merged,
+                'Merge pull request #11971 from creative-commoners/pulls/5.4/listbox-mixed-values',
+                'Merge',
+            ],
+            'merge branch commits are untouched' => [
+                'Merge branch 1 into 2',
+                'FIX Something that should not be used',
+                $merged,
+                'Merge branch 1 into 2',
+                'Merge',
+            ],
+        ];
+    }
+
+    /**
      * @param string $message
      * @param bool $expected
      * @dataProvider ignoredMessageProvider
